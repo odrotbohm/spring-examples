@@ -11,8 +11,9 @@
     <name>Spring Examples</name>
 
     <modules>
-        <module>4.1</module>
         <module>4.2</module>
+        <module>4.1</module>
+        <module>4.0</module>
     </modules>
 
 </project>

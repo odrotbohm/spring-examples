@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 the original author or authors.
+ * Copyright 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package example.config;
+package example.component;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -21,26 +21,30 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import example.config.ConfigurationSample.ApplicationConfiguration;
-import example.config.ConfigurationSample.Client;
+import example.component.BookAdminService;
 
 /**
- * Test case bootstrapping the {@link ConfigurationSample}.
- * 
  * @author Oliver Gierke
- * @soundtrack The Intersphere - Relations in the unseen (Live at Alte Feuerwache Mannheim)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationConfiguration.class)
-public class ConfigurationSampleTests {
+@ContextConfiguration
+public class ComponentTests {
 
-	@Autowired Client client;
+	@Configuration
+	@ComponentScan
+	static class Config {
+
+	}
+
+	@Autowired BookAdminService bookService;
 
 	@Test
-	public void bootstrapsContext() {
-		assertThat(client, is(notNullValue()));
+	public void containerBootstrapped() {
+		assertThat(bookService, is(notNullValue()));
 	}
 }

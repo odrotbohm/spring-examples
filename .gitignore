@@ -1,9 +1,8 @@
+target/
+.settings/
 .project
 .classpath
+.idea/
 .springBeans
-.settings/
-target/
-
-#IntelliJ Stuff
-.idea
-*.iml
+.sonar4clipse
+*.sonar4clipseExternals

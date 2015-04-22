@@ -25,11 +25,11 @@ import org.springframework.context.annotation.Configuration;
  * Sample showing Spring 4.2 supprt for interface based JavaConfig which allows
  * 
  * @author Oliver Gierke
+ * @author Thomas Darimont
  * @soundtrack The Intersphere - Relations in the unseen (Live at Alte Feuerwache Mannheim)
  */
 class ConfigurationSample {
 
-	@Configuration
 	interface ResourceConfiguration {
 
 		default @Bean SomeResource resource() {
@@ -37,7 +37,6 @@ class ConfigurationSample {
 		}
 	}
 
-	@Configuration
 	interface SomeOtherResourceConfiguration {
 
 		default @Bean SomeOtherResource otherResource() {
@@ -46,9 +45,10 @@ class ConfigurationSample {
 	}
 
 	@Configuration
-	interface ApplicationConfiguration extends ResourceConfiguration, SomeOtherResourceConfiguration {
+	static class ApplicationConfiguration implements ResourceConfiguration, SomeOtherResourceConfiguration {
 
-		default @Bean Client client() {
+		@Bean
+		Client client() {
 			return new Client(resource(), otherResource());
 		}
 	}
