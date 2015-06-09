@@ -15,6 +15,7 @@
  */
 package example.events;
 
+import example.events.EventsSample.EventProducer;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -22,8 +23,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import example.events.EventsSample.EventProducer;
 
 /**
  * Simple example class to showcase Spring 4.2 transactional events.
@@ -52,5 +51,10 @@ public class EventsSampleTests {
 		log.info("");
 
 		producer.publishEventWithException();
+	}
+
+	@Test
+	public void publishesGenericEvent() {
+		producer.publishGenericEvent();
 	}
 }

@@ -15,17 +15,21 @@
  */
 package example.events;
 
-import java.util.UUID;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.ResolvableTypeProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -53,7 +57,7 @@ class EventsSample {
 	 * The producer.
 	 */
 	@Component
-	@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+	@RequiredArgsConstructor(onConstructor = @__(@Autowired) )
 	static class EventProducer {
 
 		private final @NonNull ApplicationEventPublisher publisher;
@@ -68,6 +72,10 @@ class EventsSample {
 
 			publisher.publishEvent(new Event());
 			throw new RuntimeException();
+		}
+
+		public void publishGenericEvent() {
+			publisher.publishEvent(new EventWithPayload<Payload>(new Payload()));
 		}
 	}
 
@@ -102,6 +110,40 @@ class EventsSample {
 		@TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
 		public void afterCompletion(Event event) {
 			log.info("Received event after completion: {}", event.getPayload());
+		}
+	}
+
+	// Generic application events
+
+	@SuppressWarnings("serial")
+	static class EventWithPayload<T> extends ApplicationEvent implements ResolvableTypeProvider {
+
+		public EventWithPayload(T payload) {
+			super(payload);
+		}
+
+		/* 
+		 * (non-Javadoc)
+		 * @see org.springframework.core.ResolvableTypeProvider#getResolvableType()
+		 */
+		@Override
+		public ResolvableType getResolvableType() {
+			return ResolvableType.forClassWithGenerics(EventWithPayload.class, getSource().getClass());
+		}
+	}
+
+	static class Payload {}
+
+	@Component
+	static class Listener implements ApplicationListener<EventWithPayload<Payload>> {
+
+		/* 
+		 * (non-Javadoc)
+		 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
+		 */
+		@Override
+		public void onApplicationEvent(EventWithPayload<Payload> event) {
+			log.info("Received generic application event!");
 		}
 	}
 }
