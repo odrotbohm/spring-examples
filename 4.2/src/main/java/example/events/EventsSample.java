@@ -128,7 +128,7 @@ class EventsSample {
 		 */
 		@Override
 		public ResolvableType getResolvableType() {
-			return ResolvableType.forClassWithGenerics(EventWithPayload.class, getSource().getClass());
+			return ResolvableType.forClassWithGenerics(getClass(), ResolvableType.forInstance(source));
 		}
 	}
 
